@@ -21,3 +21,4 @@ gps_lat = np.array(flightdata.get('Gps_lat').get('data'))
 gps_long = np.array(flightdata.get('Gps_long').get('data'))
 
 plt.plot(time, pitch)
+plt.show()
