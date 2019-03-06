@@ -6,12 +6,13 @@ from matplotlib.patches import Polygon
 from matplotlib.collections import PatchCollection
 from matplotlib.colors import Normalize
 
+''' Setting up the map boundaries'''
 westlimit = 3.06
 southlimit = 51.23
-
 eastlimit = 6.70
-northlimit = 52.56
+northlimit = 52.56 
 
+'''Plotting the map'''
 fig, ax = plt.subplots(figsize=(10,20))
 
 m = Basemap(resolution='h', # c, l, i, h, f or None
@@ -22,3 +23,12 @@ m = Basemap(resolution='h', # c, l, i, h, f or None
 m.drawmapboundary(fill_color='#46bcec')
 m.fillcontinents(color='#f2f2f2',lake_color='#46bcec')
 m.drawcoastlines()
+
+'''Location of Rotterdam Airport'''
+rotlat = 51.9555
+rotlon = 4.4399
+
+xpt, ypt = m(rotlon, rotlat)
+lonpt, latpt = m(xpt, ypt, inverse=True)
+m.plot(xpt, ypt, marker='D',color='r')
+plt.show()
