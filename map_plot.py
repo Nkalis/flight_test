@@ -21,4 +21,5 @@ m = Basemap(resolution='h', # c, l, i, h, f or None
 
 m.drawmapboundary(fill_color='#46bcec')
 m.fillcontinents(color='#f2f2f2',lake_color='#46bcec')
+m.drawcountries(color = "black")
 m.drawcoastlines()
