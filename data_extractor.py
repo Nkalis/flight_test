@@ -1,24 +1,11 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar  5 16:05:26 2019
+def data_extractor(dataA, dataB):
 
-@author: nkali
-"""
-
-""" DATA READER """
-
-import mat4py
-import numpy as np
-import matplotlib.pyplot as plt
-
-data = mat4py.loadmat("matlab.mat")
-
-flightdata = data.get('flightdata', {})
-time = np.array(flightdata.get('time').get('data'))
-pitch = np.array(flightdata.get('Ahrs1_Pitch').get('data'))
-
-gps_lat = np.array(flightdata.get('Gps_lat').get('data'))
-gps_long = np.array(flightdata.get('Gps_long').get('data'))
-
-plt.plot(time, pitch)
-plt.show()
+    import mat4py    
+    
+    data = mat4py.loadmat("matlab.mat")
+    flightdata = data.get('flightdata', {})
+    
+    data1 = flightdata.get(str(dataA))
+    data2 = flightdata.get(str(dataB))
+    
+    return data1, data2
