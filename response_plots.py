@@ -7,9 +7,7 @@ def response_plot(variable1, variable2, time0, time1):
     '''Extracting the flight data from matlab.mat'''
     flightdata = data_extractor()
     
-    
     if str(variable1) == "time":
-        
         ''' Getting the time data and zeroing it out'''
         x = np.round(np.asarray(flightdata.get('time').get('data')),3)
         x = np.asarray(flightdata.get('time').get('data')) - min(x)
@@ -33,7 +31,7 @@ def response_plot(variable1, variable2, time0, time1):
     return plt.show()
 
 
-def response_plot_all(variable1, variable2):
+def response_plot_full(variable1, variable2):
     from data_extractor import data_extractor
     import matplotlib.pyplot as plt
     import numpy as np
@@ -43,6 +41,7 @@ def response_plot_all(variable1, variable2):
     flightdata = data_extractor()
     
     if variable1 == 'time':
+        ''' Getting the time data and zeroing it out'''
         x = np.round(np.asarray(flightdata.get('time').get('data')),3)
         x = np.asarray(flightdata.get('time').get('data')) - min(x)
     else:
@@ -54,5 +53,3 @@ def response_plot_all(variable1, variable2):
     
     plt.plot(x,y)
     return plt.show()
-
-response_plot('time', 'Dadc1_bcAlt', 3200, 3450)
