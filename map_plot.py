@@ -20,7 +20,7 @@ northlimit = 52.5
 fig, ax = plt.subplots(figsize=(10,20))
 
 ''' Selecting range of data'''
-start = 3200
+start = 0
 end = 3450
 
 time = np.round(np.asarray(flightdata.get('time').get('data')),3)
@@ -33,19 +33,20 @@ endind = list(time).index(end)
 
 plt.subplot(2, 1, 1)
 m = Basemap(resolution='h', # c, l, i, h, f or None
-            projection='merc',
+            projection='cyl',
             lat_0=(westlimit+eastlimit)/2, lon_0=(southlimit+northlimit)/2,
-            llcrnrlon=westlimit, llcrnrlat= southlimit, urcrnrlon=eastlimit, urcrnrlat=northlimit)
+            llcrnrlon=westlimit, llcrnrlat= southlimit, urcrnrlon=eastlimit, urcrnrlat=northlimit, epsg=3035)
 
 m.drawmapboundary(fill_color='#46bcec')
 m.fillcontinents(color='#eeeeee',lake_color='#46bcec')
+m.drawrivers(linewidth=1, color='#46bcec', antialiased=1, ax=None, zorder=None)
 m.drawcountries(color = "black")
 m.drawcoastlines()
+#m.arcgisimage(service = "World_Shaded_Relief", xpixels=20000) #uncomment this for super high res image
 
 # labels = [left,right,top,bottom]
 m.drawmeridians(np.arange(0, 360, 0.5), labels=[False,True,True,False])
 m.drawparallels(np.arange(-90, 90, 0.25), labels=[True,False,False,True])
-
 
 '''Location of Rotterdam Airport'''
 rotlat = 51.9555
