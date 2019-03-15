@@ -5,14 +5,17 @@ def response_plot(timedata, variable1, variable2, time0, time1):
     
     time = np.round(np.asarray(timedata.get('data')),3)
     time = np.asarray(timedata.get('data')) - min(time)
-    
+
     startind = list(time).index(time0)
     if str(time1) == "end":
         endind = -1
     else:
         endind = list(time).index(time1)
         
-    x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))[startind:endind]
+    if str(variable1.get('description')) == "Time":
+        x = time[startind:endind]
+    else:
+        x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))[startind:endind]
     y = np.asarray(list(itertools.chain.from_iterable(variable2.get('data'))))[startind:endind]
     
     plt.xlabel(str(variable1.get('description')) + ' [' + str(variable1.get('units')) + ']', fontsize=10)

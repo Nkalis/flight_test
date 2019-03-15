@@ -17,7 +17,6 @@ def cg_calculator(x_coord,m_lt,m_rt):
     x_nose = 74
     x_aftcabin1 = 321
     x_aftcabin2 = 338
-    
     #moment arm empty aircraft
     x_ac = 261.56+80.98/4
     m_ac = post_flight_data()[-2]
