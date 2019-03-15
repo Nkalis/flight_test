@@ -43,5 +43,5 @@ def cg_calculator(x_coord,m_lt,m_rt):
             break
     #cg positions
     cg_people = (np.sum(m_people*x_seats))/np.sum(m_people)
-    cg_tot = (cg_people*np.sum(m_people)+x_ac*m_ac+x_lt*ma_lt+x_rt*ma_rt)/(np.sum(m_people)+m_ac+ma_lt+ma_rt)
+    cg_tot = (cg_people*np.sum(m_people)+x_ac*m_ac+x_lt*m_lt+x_rt*m_rt)/(np.sum(m_people)+m_ac+m_lt+m_rt)
     return cg_tot
