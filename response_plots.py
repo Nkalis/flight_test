@@ -1,55 +1,42 @@
-def response_plot(variable1, variable2, time0, time1):
-    from data_extractor import data_extractor
+def response_plot(timedata, variable1, variable2, time0, time1):
     import matplotlib.pyplot as plt
     import numpy as np
     import itertools
     
-    '''Extracting the flight data from matlab.mat'''
-    flightdata = data_extractor()
+    time = np.round(np.asarray(timedata.get('data')),3)
+    time = np.asarray(timedata.get('data')) - min(time)
     
-    if str(variable1) == "time":
-        ''' Getting the time data and zeroing it out'''
-        x = np.round(np.asarray(flightdata.get('time').get('data')),3)
-        x = np.asarray(flightdata.get('time').get('data')) - min(x)
-        
-        if str(time1) == "end":
-            endind = -1
-        else:
-            endind = list(x).index(time1)
-        startind = list(x).index(time0)
-            
+    startind = list(time).index(time0)
+    if str(time1) == "end":
+        endind = -1
     else:
-        x = np.asarray(list(itertools.chain.from_iterable(flightdata.get(variable1).get('data'))))
+        endind = list(time).index(time1)
         
-    x = x[startind:endind]
-    y = np.asarray(list(itertools.chain.from_iterable(flightdata.get(variable2).get('data'))))[startind:endind]
+    x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))[startind:endind]
+    y = np.asarray(list(itertools.chain.from_iterable(variable2.get('data'))))[startind:endind]
     
-    plt.xlabel(str(flightdata.get(variable1).get('description')) + ' [' + str(flightdata.get(variable1).get('units')) + ']', fontsize=10)
-    plt.ylabel(str(flightdata.get(variable2).get('description')) + ' [' + str(flightdata.get(variable2).get('units')) + ']', fontsize=10)
+    plt.xlabel(str(variable1.get('description')) + ' [' + str(variable1.get('units')) + ']', fontsize=10)
+    plt.ylabel(str(variable2.get('description')) + ' [' + str(variable2.get('units')) + ']', fontsize=10)
     
     plt.plot(x,y)
     return plt.show()
 
 
 def response_plot_full(variable1, variable2):
-    from data_extractor import data_extractor
     import matplotlib.pyplot as plt
     import numpy as np
     import itertools
     
-    '''Extracting the flight data from matlab.mat'''
-    flightdata = data_extractor()
-    
     if variable1 == 'time':
         ''' Getting the time data and zeroing it out'''
-        x = np.round(np.asarray(flightdata.get('time').get('data')),3)
-        x = np.asarray(flightdata.get('time').get('data')) - min(x)
+        x = np.round(np.asarray(variable1.get('data')),3)
+        x = np.asarray(variable1.get('data')) - min(x)
     else:
-        x = np.asarray(list(itertools.chain.from_iterable(flightdata.get(str(variable1)).get('data'))))
-    y = np.asarray(list(itertools.chain.from_iterable(flightdata.get(str(variable2)).get('data'))))
+        x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))
+    y = np.asarray(list(itertools.chain.from_iterable(variable2.get('data'))))
     
-    plt.xlabel(str(flightdata.get(variable1).get('description')) + ' [' + str(flightdata.get(variable1).get('units')) + ']', fontsize=10)
-    plt.ylabel(str(flightdata.get(variable2).get('description')) + ' [' + str(flightdata.get(variable2).get('units')) + ']', fontsize=10)
+    plt.xlabel(str(variable1.get('description')) + ' [' + str(variable1.get('units')) + ']', fontsize=10)
+    plt.ylabel(str(variable2.get('description')) + ' [' + str(variable2.get('units')) + ']', fontsize=10)
     
     plt.plot(x,y)
     return plt.show()

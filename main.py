@@ -49,15 +49,27 @@ time
 vane_AOA
 '''
 
-from data_extractor import data_extractor #data_extractor()
+from data_extractor import data_extractor
+from fuel_calc import fuel_calc #fuel_calc(initial_l, initial_r, fuel_lef, fuel_rig, timedata, time)
 from map_plot import map_plot #map_plot(t0, t1)
 from response_plots import response_plot #response_plot(variable1, variable2, time0, time1)
-from state_space_con import state_space_conv #state_space_conv(A, B, C, D)
+#from state_space_con import state_space_conv #state_space_conv(A, B, C, D)
 #from eom import equation_inputs #equation_inputs()
+
+flightdata = data_extractor()
+timedata = flightdata.get('time')
 
 t0 = 0
 t1 = 'end'
 
-data = data_extractor()
 #map_plot(t0, t1)
-response_plot('rh_engine_FMF', 'lh_engine_FMF', t0, t1)
+
+#variable1 = flightdata.get('rh_engine_FMF')
+#variable2 = flightdata.get('lh_engine_FMF')
+#response_plot(timedata, variable1, variable2, t0, t1)
+
+fuel_l = flightdata.get('lh_engine_FU')
+fuel_r = flightdata.get('rh_engine_FU')
+initial_fuel_mass_l = 2000
+initial_fuel_mass_r = 2000
+print(fuel_calc(initial_fuel_mass_l, initial_fuel_mass_r, fuel_l, fuel_r, timedata, t1))

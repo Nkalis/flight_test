@@ -6,5 +6,3 @@ def data_extractor():
     flightdata = data.get('flightdata', {})
     
     return flightdata
-
-m = data_extractor()
