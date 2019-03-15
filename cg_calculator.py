@@ -35,12 +35,18 @@ def cg_calculator(x_coord,m_lt,m_rt):
     for i in range(len(mass)):
         if m_lt <= mass[i]:
             ma_lt = ma[i-1]+(ma[i]-ma[i-1])/(mass[i]-mass[i-1])*(m_lt-mass[i-1])
-            x_lt = ma_lt*100/m_lt
+            if m_lt != 0:
+                x_lt = ma_lt*100/m_lt
+            else:
+                x_lt = 0
             break
     for i in range(len(mass)):
         if m_rt <= mass[i]:
             ma_rt = ma[i-1]+(ma[i]-ma[i-1])/(mass[i]-mass[i-1])*(m_rt-mass[i-1])
-            x_rt = ma_rt*100/m_rt
+            if m_lt != 0:
+                x_rt = ma_rt*100/m_rt
+            else:
+                x_rt = 0
             break
     #cg positions
     cg_people = (np.sum(m_people*x_seats))/np.sum(m_people)
