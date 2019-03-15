@@ -12,8 +12,7 @@ def cg_calculator(x_coord,m_lt,m_rt):
     x6 = 251
     x7 = 288
     x8 = 288
-    x10 = 170
-    x_seats = np.array([x1,x2,x3,x4,x5,x6,x7,x8,x10])
+    x_seats = np.array([x1,x2,x3,x4,x5,x6,x7,x8,x_coord])
     #baggage positions in inches from nose
     x_nose = 74
     x_aftcabin1 = 321
