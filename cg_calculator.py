@@ -3,19 +3,19 @@ def cg_calculator(x_nic,m_lt,m_rt):
     #mass import
     from postflightdata import post_flight_data
     m_people = np.array(post_flight_data()[-1])
-    #seat positions in inches from nose
-    x1 = 131
-    x2 = 131
-    x3 = 214
-    x4 = 214
-    x5 = 251
-    x6 = 251
-    x7 = 288
-    x10 = 170
+    #seat positions in meters from nose
+    x1 = 131*0.0254
+    x2 = 131*0.0254
+    x3 = 214*0.0254
+    x4 = 214*0.0254
+    x5 = 251*0.0254
+    x6 = 251*0.0254
+    x7 = 288*0.0254
+    x10 = 170*0.0254
     x_seats = np.array([x1,x2,x3,x4,x5,x6,x7,x_nic,x10])
     #moment arm empty aircraft
-    x_ac = 261.56+80.98/4
-    m_ac = post_flight_data()[-2]
+    x_ac = (261.56+80.98/4)*0.0254
+    m_ac = (post_flight_data()[-2])*0.45359237
     #moment arm fuel
     mass = [None]*50
     mass[0] = 0
@@ -31,7 +31,7 @@ def cg_calculator(x_nic,m_lt,m_rt):
         if m_lt <= mass[i]:
             ma_lt = ma[i-1]+(ma[i]-ma[i-1])/(mass[i]-mass[i-1])*(m_lt-mass[i-1])
             if m_lt != 0:
-                x_lt = ma_lt*100/m_lt
+                x_lt = (ma_lt*100/m_lt)*0.0254
             else:
                 x_lt = 0
             break
@@ -39,11 +39,11 @@ def cg_calculator(x_nic,m_lt,m_rt):
         if m_rt <= mass[i]:
             ma_rt = ma[i-1]+(ma[i]-ma[i-1])/(mass[i]-mass[i-1])*(m_rt-mass[i-1])
             if m_lt != 0:
-                x_rt = ma_rt*100/m_rt
+                x_rt = (ma_rt*100/m_rt)*0.0254
             else:
                 x_rt = 0
             break
     #cg positions
     cg_people = (np.sum(m_people*x_seats))/np.sum(m_people)
-    cg_tot = (cg_people*np.sum(m_people)+x_ac*m_ac+x_lt*m_lt+x_rt*m_rt)/(np.sum(m_people)+m_ac+m_lt+m_rt)
+    cg_tot = (cg_people*np.sum(m_people)+x_ac*m_ac**0.45359237+x_lt*m_lt**0.45359237+x_rt*m_rt)/(np.sum(m_people)+m_ac+m_lt*0.45359237+m_rt*0.45359237)
     return cg_tot
