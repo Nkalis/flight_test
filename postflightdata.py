@@ -29,43 +29,43 @@ def post_flight_data():
     
     """ Stationary measurements CL-CD series 1 """
     
-    # Pressure altitude
+    # Pressure altitude (ft)
     hp = []
     hp1 = data[:,3]
     for i in range(27,33):
         hp.append(float(hp1[i]))
     
-    # Indicated airspeed
+    # Indicated airspeed (kts)
     IAS = []
     IAS1 = data[:,4]
     for i in range(27,33):
         IAS.append(float(IAS1[i]))
     
-    # Angle of attack
+    # Angle of attack (deg)
     a = []
     a1 = data[:,5]
     for i in range(27,33):
         a.append(float(a1[i]))
     
-    # Fuel flow left
+    # Fuel flow left (lbs/hr)
     FFl = []
     FFl1 = data[:,6]
     for i in range(27,33):
         FFl.append(float(FFl1[i]))
     
-    # Fuel flow right
+    # Fuel flow right (lbs/hr)
     FFr = []
     FFr1 = data[:,7]
     for i in range(27,33):
         FFr.append(float(FFr1[i]))
     
-    # Fuel used
+    # Fuel used (lbs)
     F_used = []
     F_used1 = data[:,8]
     for i in range(27,33):
         F_used.append(float(F_used1[i]))
     
-    # True air temperature
+    # True air temperature (C)
     TAT = []
     TAT1 = data[:,9]
     for i in range(27,33):
@@ -82,7 +82,7 @@ def post_flight_data():
     """ Masses """
     BEM = 13600. # lbs (basic empty mass)
     BFuel = float(data[17][3]) # lbs (block fuel)
-    # Payload
+    # Payload (kg)
     Payl = []
     Payl1 = data[:,7]
     for i in range(7,16):
@@ -92,14 +92,15 @@ def post_flight_data():
     """ Unit conversions """
     BEM = BEM * 0.453592 # kg (basic empty mass)
     BFuel = BFuel * 0.453592 # kg (block fuel)
-    # kg (fuel used)
+    # Fuel used (kg)
     for i in range(len(F_used)):
         F_used[i] = F_used[i] * 0.453592
     
     """ Ramp mass """
-    M_r = BEM + BFuel + Payload
+    M_r = BEM + BFuel + Payload # kg (ramp mass)
     
     """ Total mass at point in time """
+    # kg (total mass)
     M_t = []
     for i in range(len(F_used)):
         M_t1 = M_r - F_used[i]
