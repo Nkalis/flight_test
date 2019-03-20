@@ -42,10 +42,10 @@ def post_flight_data():
         IAS.append(float(IAS1[i]))
     
     # Angle of attack (deg)
-    a = []
-    a1 = data[:,5]
+    alpha = []
+    alpha1 = data[:,5]
     for i in range(27,33):
-        a.append(float(a1[i]))
+        alpha.append(float(alpha1[i]))
     
     # Fuel flow left (lbs/hr)
     FFl = []
@@ -113,6 +113,6 @@ def post_flight_data():
         W_t1 = M_t[i] * g
         W_t.append(W_t1)
         
-    return hp, IAS, a, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
+    return hp, IAS, alpha, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
 
 data = post_flight_data()
