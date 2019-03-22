@@ -1,9 +1,9 @@
-def state_space_conv(): 
-    from eom import eom 
+def state_space_conv(data):
+    from eom import eom
     import numpy as np 
     import control.matlab as c 
-     
-    eoms = eom() 
+    
+    eoms = eom(data)
     Psym, Qsym, Rsym, Pasym, Qasym, Rasym = eoms 
     #Symmetrical Case 
     A = np.linalg.inv(Psym)*Qsym 

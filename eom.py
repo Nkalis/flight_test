@@ -1,13 +1,13 @@
-def eom(): 
+def eom(rho, m): 
     import numpy as np 
-     
+    
     #import control 
     """ Variables not sure needed """ 
     m = 5800 
     W_s = 5800*9.81 # N (standard aircraft mass) 
     m_fs = 0.048 # kg/s (standard engine fuel flow per engine) 
-    rho_0 = 0.90 # kg/m^3 (standard air density) 
-     
+#    rho_0 = 0.90 # kg/m^3 (standard air density) 
+
     """ Input variables """ 
     theta = 0.070 
     V = 95 
@@ -16,8 +16,8 @@ def eom():
     b = 15.911 # m (Wing span) 
     e = 0.8 # (Oswald efficiency factor) 
      
-    mu_c = m/(rho_0*S*c) 
-    mu_b = m/(rho_0*S*b) 
+    mu_c = m/(rho*S*c) 
+    mu_b = m/(rho*S*b) 
      
     D_c = c/V 
     D_b = b/V 
@@ -80,9 +80,9 @@ def eom():
     """ Total mass computation """ 
     M_r = 6000 # inch or kg (ramp mass) 
      
-    C_L = (W_s)/(0.5*rho_0*V**2*S) 
-    C_X0 = (W_s*np.sin(np.deg2rad(theta)))/(0.5*rho_0*V**2*S) 
-    C_Z0 = -(W_s*np.cos(np.deg2rad(theta)))/(0.5*rho_0*V**2*S) 
+    C_L = (m)/(0.5*rho*V**2*S) 
+    C_X0 = (m*np.sin(np.deg2rad(theta)))/(0.5*rho*V**2*S) 
+    C_Z0 = -(m*np.cos(np.deg2rad(theta)))/(0.5*rho*V**2*S) 
      
     """ Equations of symmetric motion """ 
     Psym = np.matrix([[-2*mu_c*D_c/V, 0, 0, 0], 

@@ -38,36 +38,35 @@ from fuel_calc import fuel_calc #fuel_calc(initial_l, initial_r, fuel_lef, fuel_
 from map_plot import map_plot #map_plot(timedata, t0, t1, gps_lon, gps_lat, alt) 
 from response_plots import response_plot_data #response_plot(variable1, variable2, time0, time1) 
 from cg_calculator import cg_calculator #(x_coord,m_lt,m_rt) 
-import postflightdata as post_flight_data 
+from postflightdata import post_flight_data 
  
 import matplotlib.pyplot as plt 
  
 ''' Getting the flight data from both sources''' 
 flightdata = data_extractor() 
-testdata = post_flight_data 
+testdata = post_flight_data()
  
 ''' Getting the time data from the flight data ''' 
 timedata = flightdata.get('time') 
-start = 'start' 
-end= 'end' 
- 
-#''' Example of plotting two variables against eachother ''' 
-#t0 = start 
-#t1 = end 
-#variable1 = flightdata.get('time') 
-#variable2 = flightdata.get('Dadc1_bcAlt') 
+t0 = 'start' 
+t1 =  'end'
+
+''' Example of plotting two variables against eachother ''' 
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('delta_r')
+alt = flightdata.get('Dadc1_bcAlt')
+
 #response_plot_data(timedata, variable1, variable2, t0, t1) 
-# 
+ 
 #''' Example of a map plot ''' 
 #gps_lon = flightdata.get('Gps_long') 
 #gps_lat = flightdata.get('Gps_lat') 
 #alt = flightdata.get('Dadc1_bcAlt') 
-##map_plot(timedata, t0, t1, gps_lon, gps_lat, alt) 
- 
+#map_plot(timedata, t0, t1, gps_lon, gps_lat, alt) 
+# 
 ''' Calculating the fuel left in the tanks ''' 
 fuel_used_l = flightdata.get('lh_engine_FU') 
 fuel_used_r = flightdata.get('rh_engine_FU') 
-initial_fuel_l = 2000 
-initial_fuel_r = 2000 
-fuel_mass = fuel_calc(initial_fuel_l, initial_fuel_r, fuel_used_l, fuel_used_r) 
-cgs = cg_calculator(100, fuel_mass[0], fuel_mass[1])
+initial_fuel_l = 4050/2 
+initial_fuel_r = 4050/2 
+fuel_mass = fuel_calc(initial_fuel_l, initial_fuel_r, fuel_used_l, fuel_used_r, testdata[-3])

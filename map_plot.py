@@ -16,35 +16,34 @@ def map_plot(timedata, t0, t1, gps_lon, gps_lat, alt):
     '''Plotting the map data''' 
     fig, ax = plt.subplots(figsize=(10,20)) 
      
-    ''' Selecting range of data''' 
-    start = t0 
-    end = t1 
-     
     ''' Getting the time data and zeroing it out''' 
     time = np.round(np.asarray(timedata.get('data')),3) 
      
     ''' Indexing where to start plots from ''' 
-    if str(end) == "end": 
+    if t1 == "end": 
         endind = -1 
     else: 
-        endind = list(time).index(end) 
-    startind = list(time).index(start) 
+        endind = list(time).index(t1)
+    if t0 == 'start': 
+        startind = 0
+    else: 
+        startind = list(time).index(t0) 
  
     ''' Setting up the basemap plot ''' 
-    m = Basemap(resolution='i', # c, l, i, h, f or None 
+    m = Basemap(resolution='h', # c, l, i, h, f or None 
                 projection='cyl', 
                 lat_0=(westlimit+eastlimit)/2, lon_0=(southlimit+northlimit)/2, 
                 llcrnrlon=westlimit, llcrnrlat= southlimit, urcrnrlon=eastlimit, urcrnrlat=northlimit, epsg=3035) 
      
     ''' Including parameters for the map plot''' 
     '''         Uncomment below for less detailed plot      ''' 
-    m.drawmapboundary(fill_color='#46bcec') 
-    m.fillcontinents(color='#eeeeee',lake_color='#46bcec') 
-    m.drawrivers(linewidth=1, color='#46bcec', antialiased=1, ax=None, zorder=None) 
-    m.drawcountries(color = "black") 
-    m.drawcoastlines() 
+#    m.drawmapboundary(fill_color='#46bcec') 
+#    m.fillcontinents(color='#eeeeee',lake_color='#46bcec') 
+#    m.drawrivers(linewidth=1, color='#46bcec', antialiased=1, ax=None, zorder=None) 
+#    m.drawcountries(color = "black") 
+#    m.drawcoastlines() 
     '''         Uncomment below for detailed plot           ''' 
-    #m.arcgisimage(service = "World_Shaded_Relief", xpixels=8000) #uncomment this for super high res image 
+    m.arcgisimage(service = "World_Shaded_Relief", xpixels=8000) #uncomment this for super high res image 
      
     '''drawing the meridian and parralel lines, labels = [left,right,top,bottom] ''' 
     m.drawmeridians(np.arange(0, 360, 0.5), labels=[False,True,True,False]) 
