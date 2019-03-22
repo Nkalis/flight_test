@@ -1,17 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Mar 15 12:28:34 2019
-
-@author: TUDelftSID
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 13 11:17:13 2019
-
-@author: TUDelftSID
-"""
-
 from math import *
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,7 +7,7 @@ from postflightdata import post_flight_data
 #------------------------------------------------------------------------------
 
 data = post_flight_data()
-# hp, IAS, a, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
+# hp, IAS, alpha, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
 
 #------------------------------------------------------------------------------
 
@@ -36,8 +22,8 @@ IAS = data[1]
 print ("Indicated airspeed (kts) : ", IAS)
 
 # Angle of attack
-a = data[2]
-print ("Angle of attack (deg): ", a)
+alpha = data[2]
+print ("Angle of attack (deg): ", alpha)
 
 # Fuel flow left
 FFl = data[3]
@@ -93,17 +79,19 @@ print ("Total weight at point in time (N): ", W_t)
 
 #------------------------------------------------------------------------------
 
-""" Pressure altitude """
-# Conversion to m
+""" Conversions """
+
+# Pressure altitude - conversion to m
 for i in range(len(hp)):
     hp[i] = hp[i] * 0.3048
 print ("Pressure altitude (m):", hp)
 
-""" Temperature conversion """
-# conversion to K
+# Total air temperature - conversion to K
 for i in range(len(TAT)):
-    TAT[i] = TAT[i] + 273.15
+    TAT[i] = TAT[i] + 274.15
 print ("Total air temperature (K):", TAT)
+
+#------------------------------------------------------------------------------
 
 """ Calibrated airspeed """
 CAS = []
@@ -111,10 +99,59 @@ for i in range(len(IAS)):
     CAS1 = IAS[i] - 2.
     CAS.append(CAS1)
 print ("Calibrated airspeed (kts): ", CAS)
-# conversion to m/s
+# Calibrated airspeed - conversion to m/s
 for i in range(len(CAS)):
     CAS[i] = CAS[i] * 0.514444444
 print ("Calibrated airspeed (m/s): ", CAS)
+
+""" Pressure calibration """
+p = []
+for i in range(len(hp)):
+    p1 = p_0 * (1. + (ah*hp[i])/(T_0))**(-g/(ah*R))
+    p.append(p1)
+print ("Pressure calibration (Pa): ", p)
+
+""" Mach number """
+M = []
+for i in range(len(p)):
+    M1 = sqrt( (2./(gamma - 1.)) * ((1. + (p_0/p[i]) * ((1. + (gamma - 1.)/(2.*gamma) * (rho_0/p_0) * CAS[i]**2.)**(gamma/(gamma - 1.)) - 1.))**((gamma - 1.)/gamma) - 1.) )
+    M.append(M1)
+print ("Mach number (-): ", M)
+
+""" Corrected total air temperature """
+Ts = []
+for i in range(len(M)):
+    Ts1 = TAT[i]/(1. + (((gamma - 1.)/2.) * M[i]**2.))
+    Ts.append(Ts1)
+print ("Corrected total air temperature (K): ", Ts)
+
+""" Speed of sound """
+a = []
+for i in range(len(Ts)):
+    a1 = sqrt( gamma * R * Ts[i] )
+    a.append(a1)
+print ("Speed of sound (m/s): ", a)
+
+""" True airspeed """
+TAS = []
+for i in range(len(a)):
+    TAS1 = M[i] * a[i]
+    TAS.append(TAS1)
+print ("True airspeed (m/s): ", TAS)
+
+""" Density """
+rho = []
+for i in range(len(p)):
+    rho1 = p[i]/(R*Ts[i])
+    rho.append(rho1)
+print ("Density (kg/m^3): ", rho)
+
+""" Equivalent airspeed """
+EAS = []
+for i in range(len(TAS)):
+    EAS1 = TAS[i] * sqrt(rho[i]/rho_0)
+    EAS.append(EAS1)
+print ("Equivalent airspeed (m/s): ", EAS)
 
 """ ISA Temperature """
 TISA = []
@@ -122,20 +159,6 @@ for i in range(len(hp)):
     TISA1 = T_0 + ah * hp[i]
     TISA.append(TISA1)
 print ("ISA temperature (K): ", TISA)
-
-""" Density """
-rho = []
-for i in range(len(hp)):
-    rho1 = rho_0 * (TISA[i]/T_0)**(-((g/(ah*R)) + 1.))
-    rho.append(rho1)
-print ("Air density (kg/m^3): ", rho)
-
-""" True airspeed """
-TAS = []
-for i in range(len(CAS)):
-    TAS1 = CAS[i] * sqrt(rho_0/rho[i])
-    TAS.append(TAS1)
-print ("True airspeed (m/s): ", TAS)
 
 #------------------------------------------------------------------------------
 
@@ -149,7 +172,7 @@ print ("Lift (N): ", L)
 # CL
 CL = []
 for i in range(len(L)):
-    CL1 = (2.*L[i])/(rho[i]*S*(TAS[i])**2.)
+    CL1 = (2.*L[i])/(rho[i]*S*(EAS[i])**2.)
     CL.append(CL1)
 print ("CL (-): ", CL)
 # CL squared
@@ -199,7 +222,7 @@ print ("Drag (N): ", D)
 # CD
 CD = []
 for i in range(len(D)):
-    CD1 = (2.*D[i])/(rho[i]*S*(TAS[i])**2.)
+    CD1 = (2.*D[i])/(rho[i]*S*(EAS[i])**2.)
     CD.append(CD1)
 print ("CD (-): ", CD)
 
@@ -229,30 +252,26 @@ for i in range(len(CD)):
 
 """ CL, CD - curve """
 
-#plt.plot(CDr, CL)
-#plt.title("CL - CD curve")
-#plt.xlabel("CD (-)")
-#plt.ylabel("CL (-)")
-#plt.show()
-
-#------------------------------------------------------------------------------
+plt.plot(CDr, CL)
+plt.title("CL - CD curve")
+plt.xlabel("CD (-)")
+plt.ylabel("CL (-)")
+plt.show()
 
 """ CL, alpha - curve """
 
-#plt.scatter(a, CL)
-#plt.plot(a, CL, "r")
-#plt.title("CL - alpha curve")
-#plt.xlabel("alpha (deg)")
-#plt.ylabel("CL (-)")
-#plt.show()
+plt.scatter(alpha, CL)
+plt.plot(alpha, CL, "r")
+plt.title("CL - alpha curve")
+plt.xlabel("alpha (deg)")
+plt.ylabel("CL (-)")
+plt.show()
 
 """ CD, alpha - curve """
 
-#plt.scatter(a, CDr)
-#plt.plot(a, CDr, "r")
-#plt.title("CD - alpha curve")
-#plt.xlabel("alpha (deg)")
-#plt.ylabel("CD (-)")
-#plt.show()
-
-#------------------------------------------------------------------------------
+plt.scatter(alpha, CDr)
+plt.plot(alpha, CDr, "r")
+plt.title("CD - alpha curve")
+plt.xlabel("alpha (deg)")
+plt.ylabel("CD (-)")
+plt.show()

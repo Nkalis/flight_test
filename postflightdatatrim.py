@@ -1,4 +1,11 @@
-def post_flight_data():
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Mar 19 16:16:14 2019
+
+@author: TUDelftSID
+"""
+
+def post_flight_data_trim():
     import numpy as np
     
     #------------------------------------------------------------------------------
@@ -20,7 +27,7 @@ def post_flight_data():
     for j in range(84):
         for k in range(13):
             if '\n' in data[j][k]:
-                data[j][k] = data[j][k][:-2]
+                data[j][k] = data[j][k][:-1]
             else:
                 data[j][k] = data[j][k]
     data = np.array(data)
@@ -32,43 +39,61 @@ def post_flight_data():
     # Pressure altitude (ft)
     hp = []
     hp1 = data[:,3]
-    for i in range(27,33):
+    for i in range(58,65):
         hp.append(float(hp1[i]))
     
     # Indicated airspeed (kts)
     IAS = []
     IAS1 = data[:,4]
-    for i in range(27,33):
+    for i in range(58,65):
         IAS.append(float(IAS1[i]))
     
     # Angle of attack (deg)
-    alpha = []
-    alpha1 = data[:,5]
-    for i in range(27,33):
-        alpha.append(float(alpha1[i]))
+    a = []
+    a1 = data[:,5]
+    for i in range(58,65):
+        a.append(float(a1[i]))
+        
+    # Elevator deflection (deg)
+    de = []
+    de1 = data[:,6]
+    for i in range(58,65):
+        de.append(float(de1[i]))
+        
+    # Delta elevator trim (deg)
+    detr = []
+    detr1 = data[:,7]
+    for i in range(58,65):
+        detr.append(float(detr1[i]))
     
+    # Stick force (N)
+    Fe = []
+    Fe1 = data[:,8]
+    for i in range(58,65):
+        Fe.append(float(Fe1[i]))
+            
     # Fuel flow left (lbs/hr)
     FFl = []
-    FFl1 = data[:,6]
-    for i in range(27,33):
+    FFl1 = data[:,9]
+    for i in range(58,65):
         FFl.append(float(FFl1[i]))
     
     # Fuel flow right (lbs/hr)
     FFr = []
-    FFr1 = data[:,7]
-    for i in range(27,33):
+    FFr1 = data[:,10]
+    for i in range(58,65):
         FFr.append(float(FFr1[i]))
     
     # Fuel used (lbs)
     F_used = []
-    F_used1 = data[:,8]
-    for i in range(27,33):
+    F_used1 = data[:,11]
+    for i in range(58,65):
         F_used.append(float(F_used1[i]))
     
     # True air temperature (C)
     TAT = []
-    TAT1 = data[:,9]
-    for i in range(27,33):
+    TAT1 = data[:,12]
+    for i in range(58,65):
         TAT.append(float(TAT1[i]))
     
     #------------------------------------------------------------------------------
@@ -82,7 +107,7 @@ def post_flight_data():
     """ Masses """
     BEM = 13600. # lbs (basic empty mass)
     BFuel = float(data[17][3]) # lbs (block fuel)
-    # Payload (kg)
+    # Payload
     Payl = []
     Payl1 = data[:,7]
     for i in range(7,16):
@@ -92,15 +117,14 @@ def post_flight_data():
     """ Unit conversions """
     BEM = BEM * 0.453592 # kg (basic empty mass)
     BFuel = BFuel * 0.453592 # kg (block fuel)
-    # Fuel used (kg)
+    # kg (fuel used)
     for i in range(len(F_used)):
         F_used[i] = F_used[i] * 0.453592
     
     """ Ramp mass """
-    M_r = BEM + BFuel + Payload # kg (ramp mass)
+    M_r = BEM + BFuel + Payload
     
     """ Total mass at point in time """
-    # kg (total mass)
     M_t = []
     for i in range(len(F_used)):
         M_t1 = M_r - F_used[i]
@@ -113,6 +137,6 @@ def post_flight_data():
         W_t1 = M_t[i] * g
         W_t.append(W_t1)
         
-    return hp, IAS, alpha, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
+    return hp, IAS, a, de, detr, Fe, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
 
-data = post_flight_data()
+data = post_flight_data_trim()
