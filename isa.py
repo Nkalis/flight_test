@@ -2,11 +2,11 @@ def ISA(hinft):
     import math
     
     ft = 0.3048
-    h=hinft*ft
-    
+    h = hinft*ft
     R = 287.0
     g0 = 9.80665
-    if h>=0.:
+    
+    if h>=-200:
         T0 = 288.15
         p0 = 101325.
         a = -0.0065
@@ -75,5 +75,3 @@ def ISA(hinft):
         rho1 = p1/(R*T1)
 
     return rho1
-
-print(ISA(0))

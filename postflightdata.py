@@ -114,5 +114,3 @@ def post_flight_data():
         W_t.append(W_t1)
         
     return hp, IAS, alpha, FFl, FFr, F_used, TAT, Payl, Payload, BEM, BFuel, M_r, M_t, W_t
-
-data = post_flight_data()

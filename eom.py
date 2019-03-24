@@ -1,23 +1,27 @@
-def eom(rho, m): 
+def eom(data): 
     import numpy as np 
     
+    rho = data[4]
+    m = data[1]*0.454
+    theta = np.deg2rad(data[2])
+    
     #import control 
-    """ Variables not sure needed """ 
-    m = 5800 
-    W_s = 5800*9.81 # N (standard aircraft mass) 
+    """ Variables not sure needed """
+    w = m
+    m = m*9.81 # N (standard aircraft mass) 
     m_fs = 0.048 # kg/s (standard engine fuel flow per engine) 
 #    rho_0 = 0.90 # kg/m^3 (standard air density) 
 
     """ Input variables """ 
-    theta = 0.070 
+    
     V = 95 
     S = 30.0 # m^2 (Surface area wing) 
     c = 2.0569 # m (MAC) 
     b = 15.911 # m (Wing span) 
-    e = 0.8 # (Oswald efficiency factor) 
+    e = 0.8 # (Oswald efficiency factor)
      
-    mu_c = m/(rho*S*c) 
-    mu_b = m/(rho*S*b) 
+    mu_c = m/(rho*S*c)
+    mu_b = m/(rho*S*b)
      
     D_c = c/V 
     D_b = b/V 
@@ -77,13 +81,12 @@ def eom(rho, m):
     C_ndeltaa = -0.0120 # (dC_n / delta_a) 
     C_ndeltar = -0.0939 # (dC_n / delta_r) 
      
-    """ Total mass computation """ 
-    M_r = 6000 # inch or kg (ramp mass) 
-     
-    C_L = (m)/(0.5*rho*V**2*S) 
-    C_X0 = (m*np.sin(np.deg2rad(theta)))/(0.5*rho*V**2*S) 
-    C_Z0 = -(m*np.cos(np.deg2rad(theta)))/(0.5*rho*V**2*S) 
-     
+    """ Coefficient Calculations """
+    C_L = (m)/(0.5*rho*(V**2)*S) 
+    C_X0 = (m*np.sin(theta))/(0.5*rho*(V**2)*S) 
+    C_Z0 = -(m*np.cos(theta))/(0.5*rho*(V**2)*S) 
+    
+    print(C_L, C_X0, C_Z0)
     """ Equations of symmetric motion """ 
     Psym = np.matrix([[-2*mu_c*D_c/V, 0, 0, 0], 
                      [0, (C_Zda-2*mu_c)*D_c, 0, 0], 
@@ -100,7 +103,7 @@ def eom(rho, m):
                      [0], 
                      [-C_mdelta]]) 
      
-     
+    
     Pasym = np.matrix([[(C_Ydb-2*mu_b)*D_b, 0, 0, 0], 
                       [0, -0.5*D_b, 0, 0], 
                       [0, 0, -4*mu_b*Ks_xx*D_b*D_b/2, -4*mu_b*Ks_xz*D_b*D_b/2], 

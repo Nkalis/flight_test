@@ -25,38 +25,41 @@ def response_plot_data(timedata, variable1, variable2, time0, time1):
     plt.plot(x,y) 
     return plt.show() 
  
-def state_space_plot(t0, X0, angle_input, motion): 
+def state_space_plot(data, dist_input, motion): 
     import numpy as np 
     import control.matlab as control 
     import matplotlib.pyplot as plt 
     from state_space_con import state_space_conv 
-     
-    X0 = np.transpose(np.asmatrix(X0))
-    states = state_space_conv(t0)
+    
+    X0 = np.transpose(np.matrix([95, data[3], data[2], 0]))
+#    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
+    states = state_space_conv(data)
     symsys = states[0]
     asymsys = states[2]
      
     if motion == 'phugoid': 
          
-        timesim = 300 
+        timesim = 400 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:90]= angle_input 
+        U[0:90]= dist_input 
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Symmetric Flight - Phugoid Motion') 
-         
-        ax1.plot(T[250:-1], np.transpose(yout)[0][250:-1]) 
+        T = np.ndarray.tolist(T)
+        yout = np.ndarray.tolist(yout)
+        
+        ax1.plot(T[T.index(100):T.index(220)], np.transpose(yout)[0][T.index(100):T.index(220)]) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Velocity [m/s]') 
          
-        ax2.plot(T[250:-1], np.rad2deg(np.transpose(yout)[1][250:-1])) 
+        ax2.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[1][T.index(100):T.index(220)])) 
         ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
          
-        ax3.plot(T[250:-1], np.rad2deg(np.transpose(yout)[2][250:-1])) 
+        ax3.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[2][T.index(100):T.index(220)])) 
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
          
-        ax4.plot(T[250:-1], np.rad2deg(np.transpose(yout)[3][250:-1])) 
+        ax4.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[3][T.index(100):T.index(220)])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
         return plt.show() 
      
@@ -65,7 +68,7 @@ def state_space_plot(t0, X0, angle_input, motion):
         timesim = 20 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:-1]= angle_input 
+        U[0:-1]= dist_input 
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
@@ -89,7 +92,7 @@ def state_space_plot(t0, X0, angle_input, motion):
         timesim = 20
         t = np.linspace(0, timesim, 1001)
         U1, U2 = np.zeros(len(t)),np.zeros(len(t))
-        U1[0:30] = -0.0253
+        U1[0:30] = dist_input 
         U = np.transpose(np.matrix([U1, U2]))
 
         yout, T, xout = control.lsim(asymsys, U, t, X0)
@@ -115,9 +118,9 @@ def state_space_plot(t0, X0, angle_input, motion):
         timesim = 200
         t = np.linspace(0, timesim, 1001)
         U1, U2 = np.zeros(len(t)),np.zeros(len(t))
-        U1[0:30] = angle_input
-        U1[31:60] = -angle_input
-        U1[61:90] = angle_input
+        U1[0:30] = dist_input 
+        U1[31:60] = -dist_input 
+        U1[61:90] = dist_input 
         U = np.transpose(np.matrix([U1, U2]))
 
         yout, T, xout = control.lsim(asymsys, U, t, X0)
@@ -161,6 +164,4 @@ def state_space_plot(t0, X0, angle_input, motion):
          
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
-        return plt.show() 
-    
-#state_space_plot([0,0,0,0], -0.02, 'spiral')
+        return plt.show()
