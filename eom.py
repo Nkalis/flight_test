@@ -4,17 +4,16 @@ def eom(data):
     rho = data[4]
     m = data[1]*0.454
     theta = np.deg2rad(data[2])
-    
+
     #import control 
     """ Variables not sure needed """
-    w = m
-    m = m*9.81 # N (standard aircraft mass) 
+    w = m*9.81 # N (standard aircraft mass) 
     m_fs = 0.048 # kg/s (standard engine fuel flow per engine) 
 #    rho_0 = 0.90 # kg/m^3 (standard air density) 
 
     """ Input variables """ 
     
-    V = 95 
+    V = data[5]
     S = 30.0 # m^2 (Surface area wing) 
     c = 2.0569 # m (MAC) 
     b = 15.911 # m (Wing span) 
@@ -54,7 +53,7 @@ def eom(data):
     C_mda = 0.1780 # (dC_m / dalpha_dot) 
     C_mq = -8.7941 # (dC_m / dq) 
     C_mdelta = -1.1642 # (dC_m / ddelta) 
-    C_mTc = -0.0064 # (dC_m / dTc) 
+    C_mTc = -0.0064 # (dC_m / dTc)
      
     """ Linear model stability derivatives - asymmetric flight """ 
     # Lateral force derivatives 
@@ -82,9 +81,9 @@ def eom(data):
     C_ndeltar = -0.0939 # (dC_n / delta_r) 
      
     """ Coefficient Calculations """
-    C_L = (m)/(0.5*rho*(V**2)*S) 
-    C_X0 = (m*np.sin(theta))/(0.5*rho*(V**2)*S) 
-    C_Z0 = -(m*np.cos(theta))/(0.5*rho*(V**2)*S) 
+    C_L = (w)/(0.5*rho*(V**2)*S)
+    C_X0 = (w*np.sin(theta))/(0.5*rho*(V**2)*S) 
+    C_Z0 = -(w*np.cos(theta))/(0.5*rho*(V**2)*S) 
     
     print(C_L, C_X0, C_Z0)
     """ Equations of symmetric motion """ 

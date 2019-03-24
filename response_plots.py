@@ -39,10 +39,11 @@ def state_space_plot(data, dist_input, motion):
      
     if motion == 'phugoid': 
          
-        timesim = 400 
+        timesim = 125 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:90]= dist_input 
+        U[0:75]= -0.75
+        U[75:-1] = 0
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
@@ -50,16 +51,16 @@ def state_space_plot(data, dist_input, motion):
         T = np.ndarray.tolist(T)
         yout = np.ndarray.tolist(yout)
         
-        ax1.plot(T[T.index(100):T.index(220)], np.transpose(yout)[0][T.index(100):T.index(220)]) 
+        ax1.plot(T, np.transpose(yout)[0]) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Velocity [m/s]') 
          
-        ax2.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[1][T.index(100):T.index(220)])) 
+        ax2.plot(T, np.transpose(yout)[1]) 
         ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
          
-        ax3.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[2][T.index(100):T.index(220)])) 
+        ax3.plot(T, np.transpose(yout)[2]) 
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
          
-        ax4.plot(T[T.index(100):T.index(220)], np.rad2deg(np.transpose(yout)[3][T.index(100):T.index(220)])) 
+        ax4.plot(T, np.transpose(yout)[3]) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
         return plt.show() 
      
@@ -77,13 +78,13 @@ def state_space_plot(data, dist_input, motion):
         ax1.plot(T, np.transpose(yout)[0]) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Velocity [m/s]') 
          
-        ax2.plot(T, np.rad2deg(np.transpose(yout)[1])) 
+        ax2.plot(T, np.transpose(yout)[1]) 
         ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
          
-        ax3.plot(T, np.rad2deg(np.transpose(yout)[2])) 
+        ax3.plot(T, np.transpose(yout)[2]) 
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
          
-        ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
+        ax4.plot(T, np.transpose(yout)[3]) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
         return plt.show() 
     
@@ -164,4 +165,69 @@ def state_space_plot(data, dist_input, motion):
          
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        return plt.show()
+    
+def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, time0, time1, data, dist_input, motion):
+    import numpy as np 
+    import control.matlab as control 
+    import matplotlib.pyplot as plt 
+    from state_space_con import state_space_conv  
+    import itertools 
+     
+    time = np.round(np.asarray(timedata.get('data')),3) 
+    
+    if time0 == 'start': 
+        startind = 0 
+    else: 
+        startind = list(time).index(time0) 
+    if time1 == 'end': 
+        endind = -1 
+    else: 
+        endind = list(time).index(time1) 
+    if variable1.get('description') == 'Time': 
+        x = time[startind:endind] - time0
+    else: 
+        x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))[startind:endind] - time0
+        
+    y1 = np.asarray(list(itertools.chain.from_iterable(variable2.get('data'))))[startind:endind]
+    y2 = np.asarray(list(itertools.chain.from_iterable(variable3.get('data'))))[startind:endind]
+    y3 = np.asarray(list(itertools.chain.from_iterable(variable4.get('data'))))[startind:endind]
+    y4 = np.asarray(list(itertools.chain.from_iterable(variable5.get('data'))))[startind:endind]
+    
+    X0 = np.transpose(np.matrix([data[5], data[3], data[2], 0]))
+#    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
+    states = state_space_conv(data)
+    symsys = states[0]
+    asymsys = states[2]
+     
+    if motion == 'phugoid': 
+    
+        timesim = 125 
+        t = np.linspace(0, timesim, 1001) 
+        U = np.zeros(len(t)) 
+        U[0:75]= -0.75
+        U[75:-1] = 0.19
+        yout, T, xout = control.lsim(symsys, U, t, X0) 
+         
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Symmetric Flight - Phugoid Motion') 
+        T = np.ndarray.tolist(T)
+        yout = np.ndarray.tolist(yout)
+        
+        ax1.plot(T, U)
+        ax1.plot(x, y1)
+        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Elevator Deflection Angle [deg]') 
+         
+        ax2.plot(T, np.transpose(yout)[1])
+        ax2.plot(x, y2)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
+         
+        ax3.plot(T, np.transpose(yout)[2])
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
+         
+        ax4.plot(T, np.transpose(yout)[3])
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
+        
         return plt.show()
