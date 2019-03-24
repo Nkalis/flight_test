@@ -3,7 +3,7 @@ def post_flight_data():
     
     #------------------------------------------------------------------------------
     """ Open Post Flight Data Sheet csv file """
-    f = open("postflightdataex2.csv","r")
+    f = open("postflightdata.csv","r")
     lines = f.readlines()
     f.close()
     

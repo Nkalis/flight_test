@@ -1,0 +1,84 @@
+Post-Flight Data Sheet AE3202;;;;;;;;;;;;
+;;;;;;;;;;;;
+date of flight:;;;18-3-2019;;T/O time:;;;;;;;
+flight number:;;;;;LND time:;;;;;;;
+;;;;;;;;;;;;
+Weights;;;;;;;;;;;;
+;;;name;;;;mass [kg];;;;;
+pilot 1:;;;Tjipke;;;;82;;;;;
+pilot 2:;;;Hans;;;;92;;;;;
+co-ordinator:;;;Dirk;;;;73;;;;;
+observer 1L:;;;nora;;;;64;;;;;
+observer 1R:;;;kiva;;;;53;;;;;
+observer 2L:;;;danny;;;;65;;;;;
+observer 2R:;;;pranav;;;;56;;;;;
+observer 3L:;;;kim;;;;70;;;;;
+observer 3R:;;;nick;;;;76.5;;;;;
+;;;;;;;;;;;;
+block fuel [lbs]:;;;4050;;;;;;;;;
+;;;;;;;;;;;;
+;;;;;;;;;;;;
+Stationary measurements CL-CD Series 1;;;;;;;;;;;;
+;;;;;;;;;;;;
+Aircraft configuration:;;;;clean;;;;;;;;
+;;;;;;;;;;;;
+nr.;time;ET*;hp;IAS;a;FFl;FFr;F. used;TAT;;;
+;[hrs:min];[sec];[ft];[kts];[deg];[lbs/hr];[lbs/hr];[lbs];[°C];;;
+;;;;;;;;;;;;
+1;00:13;;5030;245;1.7;743;826;236;3;;;
+2;00:19:26;;7990;246;1.6;710;759;408;-2;;;
+3;00:21:13;;7990;217;2.5;570;633;445;3.2;;;
+4;00:23:08;;8000;192;3.5;513;552;477;-5.2;;;
+5;00:24:40;;7980;158;5.7;420;477;498;-7;;;
+6;00:27:20;;7990;130;9;409;463;533;-8.2;;;
+7;00:29:26;;8040;118;10.7;436;478;561;-9;;;
+;;* ET = Elapsed Time;;;;;;;;;;
+;;;;;;;;;;;;
+Stationary measurements CL - CD Series 2;;;;;;;;;;;;
+;;;;;;;;;;;;
+Aircraft configuration :;;;;;;;;;;;;
+;;;;;;;;;;;;
+nr.;time;ET*;hp;IAS;a;FFl;FFr;F. used;TAT;;;
+;[hh:mm];[sec];[ft];[kts];[deg];[lbs/hr];[lbs/hr];[lbs];[°C];;;
+;;;;;;;;;;;;
+1;;;;;;;;;;;;
+2;;;;;;;;;;;;
+3;;;;;;;;;;;;
+4;;;;;;;;;;;;
+5;;;;;;;;;;;;
+6;;;;;;;;;;;;
+7;;;;;;;;;;;;
+;;* ET = Elapsed Time;;;;;;;;;;
+Stationary measurements Elevator Trim Curve;;;;;;;;;;;;
+;;;;;;;;;;;;
+Aircraft configuration:;;;;clean;;;;;;;;
+;;;;;;;;;;;;
+nr.;time;ET*;hp;IAS;a;de;detr;Fe;FFl;FFr;F. used;TAT
+;[hh:mm];[sec];[ft];[kts];[deg];[deg];[deg];[N];[lbs/hr];[lbs/hr];[lbs];[°C]
+;;;;;;;;;;;;
+1;0:34;;9950;159;5.4;0.2;3.2;-1;425;471;665;-10.1
+2;0:36;;10270;148;6;-0.3;3.2;-27;418;464;682;-10.8
+3;0:37;;10530;141;7.1;-0.6;3.2;-36;414;460;699;-11.8
+4;0:38;;10700;129;8.6;-1.2;3.2;-38;411;457;712;-12.5
+5;0:39;;9990;170;4.8;0.6;3.2;25;425;472;735;-9
+6;0:40;;9610;180;4.1;0.8;3.2;50;434;480;748;-8
+7;0:41;;9240;190;3.4;1.1;3.2;68;441;489;764;-7
+;;* ET = Elapsed Time;;;;;;;;;;
+;;;;;;;;;;;;
+Shift in center of gravity;;;;;;;;;;;;
+;;;;;;;;;;;;
+name:;;nick;;;;;;;;;;
+position:;;3R;;moved to position:;;;cockpit;;;;;
+;;;;;;;;;;;;
+nr.;time;ET*;hp;IAS;a;de;detr;Fe;FFl;FFr;F. used;TAT
+;[hh:mm];[sec];[ft];[kts];[deg];[deg];[deg];[N];[lbs/hr];[lbs/hr];[lbs];[°C]
+1;0:44;;10420;162;5.3;0.2;3.2;0;408;452;815;-11
+2;0:45;;10400;161;5.4;-0.3;3.2;-23;409;453;834;-11.2
+;;* ET = Elapsed Time;;;;;;;;;;
+;;;;;;;;;;;;
+Eigenmotions;;;;;;;;;;;;
+;;;;;;;;;;;;
+;;;Time;;;Time;;;Time;;;
+;;;[hh:mm];;;[hh:mm];;;[hh:mm];;;
+Phugoid;;;0:48;Dutch Roll;;0:51;Aper. Roll;;0:47;;;
+Short period;;;0:50;Dutch Roll YD;;0:52;Spiral;;0:53;;;

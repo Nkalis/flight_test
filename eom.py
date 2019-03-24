@@ -7,8 +7,7 @@ def eom(data):
     
     #import control 
     """ Variables not sure needed """
-    w = m
-    m = m*9.81 # N (standard aircraft mass) 
+    w = m*9.81 # N (standard aircraft mass) 
     m_fs = 0.048 # kg/s (standard engine fuel flow per engine) 
 #    rho_0 = 0.90 # kg/m^3 (standard air density) 
 
@@ -82,9 +81,9 @@ def eom(data):
     C_ndeltar = -0.0939 # (dC_n / delta_r) 
      
     """ Coefficient Calculations """
-    C_L = (m)/(0.5*rho*(V**2)*S) 
-    C_X0 = (m*np.sin(theta))/(0.5*rho*(V**2)*S) 
-    C_Z0 = -(m*np.cos(theta))/(0.5*rho*(V**2)*S) 
+    C_L = (w)/(0.5*rho*(V**2)*S) 
+    C_X0 = (w*np.sin(theta))/(0.5*rho*(V**2)*S) 
+    C_Z0 = -(w*np.cos(theta))/(0.5*rho*(V**2)*S) 
     
     print(C_L, C_X0, C_Z0)
     """ Equations of symmetric motion """ 
