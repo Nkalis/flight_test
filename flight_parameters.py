@@ -1,4 +1,4 @@
-def flight_parameters(h,m,theta,alpha,tdata,t):
+def flight_parameters(h,m,theta,alpha,tdata,t, v):
     from isa import ISA
     
     if t == 'start': 
@@ -11,6 +11,7 @@ def flight_parameters(h,m,theta,alpha,tdata,t):
     alpha0 = (alpha.get("data")[index])[0]
     m0 = m[index]
     rho0 = ISA(h0)
+    v = (v.get('data')[index])[0] * 0.514
     
-    data = (h0, m0, theta0, alpha0, rho0)
+    data = (h0, m0, theta0, alpha0, rho0, v)
     return data
