@@ -25,13 +25,16 @@ def response_plot_data(timedata, variable1, variable2, time0, time1):
     plt.plot(x,y) 
     return plt.show() 
  
-def state_space_plot(data, dist_input, motion): 
+    
+
+def state_space_plot(motion, data):
+
     import numpy as np 
     import control.matlab as control 
     import matplotlib.pyplot as plt 
     from state_space_con import state_space_conv 
     
-    X0 = np.transpose(np.matrix([95, data[3], data[2], 0]))
+    X0 = np.transpose(np.matrix([0,0,0,0]))
 #    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
     states = state_space_conv(data)
     symsys = states[0]
@@ -66,10 +69,10 @@ def state_space_plot(data, dist_input, motion):
      
     if motion == 'short': 
          
-        timesim = 20 
+        timesim = 8 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:-1]= dist_input 
+        U[0:-1]= -0.7 
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
@@ -93,7 +96,7 @@ def state_space_plot(data, dist_input, motion):
         timesim = 20
         t = np.linspace(0, timesim, 1001)
         U1, U2 = np.zeros(len(t)),np.zeros(len(t))
-        U1[0:30] = dist_input 
+        U1[0:30] = -0.2
         U = np.transpose(np.matrix([U1, U2]))
 
         yout, T, xout = control.lsim(asymsys, U, t, X0)
@@ -167,7 +170,9 @@ def state_space_plot(data, dist_input, motion):
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
         return plt.show()
     
-def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, time0, time1, data, dist_input, motion):
+    
+    
+def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, time0, time1, data, motion):
     import numpy as np 
     import control.matlab as control 
     import matplotlib.pyplot as plt 
@@ -194,19 +199,19 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
     y3 = np.asarray(list(itertools.chain.from_iterable(variable4.get('data'))))[startind:endind]
     y4 = np.asarray(list(itertools.chain.from_iterable(variable5.get('data'))))[startind:endind]
     
-    X0 = np.transpose(np.matrix([data[5], np.deg2rad(data[3]), np.deg2rad(data[2]), np.deg2rad(0)]))
+    X0 = np.transpose(np.matrix([data[5], 0, 0, 0]))
+    XX0 = np.transpose(np.matrix([0, 0, data[-2], data[-1]]))
 #    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
     states = state_space_conv(data)
     symsys = states[0]
     asymsys = states[2]
      
     if motion == 'phugoid': 
-    
         timesim = 125 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:75]= np.deg2rad(-0.75)
-        U[75:-1] = np.deg2rad(0.19)
+        U[0:80]= -0.7
+        U[80:-1] = 0.19
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
@@ -214,20 +219,84 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         T = np.ndarray.tolist(T)
         yout = np.ndarray.tolist(yout)
         
-        ax1.plot(T, np.rad2deg(U))
+        ax1.plot(T, U)
         ax1.plot(x, y1)
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Elevator Deflection Angle [deg]') 
          
-        ax2.plot(T, np.transpose(np.rad2deg(yout))[1])
+        ax2.plot(T, np.transpose(yout)[1]+data[3])
         ax2.plot(x, y2)
         ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
          
-        ax3.plot(T, np.transpose(np.rad2deg(yout))[2])
+        ax3.plot(T, np.transpose(yout)[2]+data[2]-5.5)
         ax3.plot(x, y3)
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
          
-        ax4.plot(T, np.transpose(np.rad2deg(yout))[3])
+        ax4.plot(T, np.transpose(yout)[3])
         ax4.plot(x, y4)
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
         
         return plt.show()
+    
+    if motion == 'short': 
+    
+        timesim = 8
+        t = np.linspace(0, timesim, 1001) 
+        U = np.zeros(len(t)) 
+        U[0:-1]= -0.6
+        yout, T, xout = control.lsim(symsys, U, t, X0) 
+         
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Symmetric Flight - Phugoid Motion') 
+        T = np.ndarray.tolist(T)
+        yout = np.ndarray.tolist(yout)
+        
+        ax1.plot(T, U)
+        ax1.plot(x, y1)
+        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Elevator Deflection Angle [deg]') 
+        
+        ax2.plot(T, np.transpose(yout)[1]+data[3])
+        ax2.plot(x, y2)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
+        
+        ax3.plot(T, np.transpose(yout)[2]+data[2])
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
+        
+        ax4.plot(T, np.transpose(yout)[3])
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
+        
+        return plt.show()
+    
+    if motion == 'dutch':
+        
+        timesim = 15
+        t = np.linspace(0, timesim, 1001)
+        U1, U2 = np.zeros(len(t)),np.zeros(len(t))
+        U1[0:120] = -9.7 + 0.86
+        U1[120:240] = 3.64 + 0.86
+        U1[240:-1] = -0.86
+        U = np.transpose(np.matrix([U1, U2]))
+
+        yout, T, xout = control.lsim(asymsys, U, t, XX0)
+        
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Asymmetric Flight - Dutch Roll Motion') 
+        
+        ax1.plot(x, y1)
+        ax1.plot(T, U2+data[-4]) 
+        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Deflection Aileron [deg]') 
+        
+        ax2.plot(x, y2)
+        ax2.plot(T, U1-0.86)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Rudder [deg]') 
+        
+        ax3.plot(x, y3+data[-2])
+        ax3.plot(T, np.transpose(yout)[2]) 
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
+        
+        ax4.plot(x, y4+data[-1])
+        ax4.plot(T, np.transpose(yout)[3]) 
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        return plt.show()
+    

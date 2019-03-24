@@ -48,12 +48,12 @@ testdata = post_flight_data()
 # (h,m,theta,alpha,tdata,t)
 ''' Getting the time data from the flight data ''' 
 timedata = flightdata.get('time') 
-t0 = 2891
-t1 = 2891+125
+t0 = 3000
+t1 = 3500
 
 ''' Example of plotting two variables against eachother ''' 
 variable1 = flightdata.get('time') 
-variable2 = flightdata.get('delta_e')
+variable2 = flightdata.get('delta_r')
 alt = flightdata.get('Dadc1_bcAlt')
 
 #response_plot_data(timedata, variable1, variable2, t0, t1) 
@@ -71,13 +71,23 @@ initial_fuel_l = 4050/2
 initial_fuel_r = 4050/2
 fuel_mass = fuel_calc(initial_fuel_l, initial_fuel_r, fuel_used_l, fuel_used_r, testdata[-3])
 
-flightparameters = flight_parameters(flightdata.get('Dadc1_bcAlt'), fuel_mass[2], flightdata.get('Ahrs1_Pitch'), flightdata.get('vane_AOA'), timedata, t0, flightdata.get('Dadc1_tas'))
+flightparameters = flight_parameters(flightdata.get('Dadc1_bcAlt'), fuel_mass[2], flightdata.get('Ahrs1_Pitch'), flightdata.get('vane_AOA'), timedata, t0, flightdata.get('Dadc1_tas'), flightdata.get('delta_a'), flightdata.get('delta_r'), flightdata.get('Ahrs1_bRollRate'), flightdata.get('Ahrs1_bYawRate'))
 print(flightparameters)
-#state_space_plot(flightparameters, -0.02, 'phugoid')
-''' Comparing state space and actual '''
+#state_space_plot('aperiodic', flightparameters)
+
+''' Comparing state space symmetrical and actual '''
 variable1 = flightdata.get('time') 
 variable2 = flightdata.get('delta_e')
 variable3 = flightdata.get('vane_AOA') 
 variable4 = flightdata.get('Ahrs1_Pitch')
 variable5 = flightdata.get('Ahrs1_bPitchRate')
-compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, t0, t1, flightparameters, -0.02, 'phugoid')
+#compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, 2891-1.4,  2891+125-1.4, flightparameters, 'phugoid')
+#compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, 3041.5, 3049.5, flightparameters, 'short')
+
+''' Comparing state space asymmetrical and actual '''
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('delta_a') 
+variable3 = flightdata.get('delta_r') 
+variable4 = flightdata.get('Ahrs1_bRollRate')
+variable5 = flightdata.get('Ahrs1_bYawRate') 
+compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, 3098.5, 3098.5+15, flightparameters, 'dutch')
