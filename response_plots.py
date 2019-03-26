@@ -91,13 +91,17 @@ def state_space_plot(motion, data):
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
         return plt.show() 
     
+    
+    
+    
     if motion == 'aperiodic':
         
-        timesim = 20
+        timesim = 8
         t = np.linspace(0, timesim, 1001)
-        U1, U2 = np.zeros(len(t)),np.zeros(len(t))
-        U1[0:30] = -0.2
-        U = np.transpose(np.matrix([U1, U2]))
+        U = np.zeros((len(t),2))
+        U[3:-1,:] = -0.0253
+#        U2[0:1] = 1.23
+#        U = np.transpose(np.matrix(U))
 
         yout, T, xout = control.lsim(asymsys, U, t, X0)
         
@@ -108,7 +112,7 @@ def state_space_plot(motion, data):
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Andle of Side Slip [deg]') 
          
         ax2.plot(T, np.rad2deg(np.transpose(yout)[1])) 
-        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Yaw Angle [deg]') 
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]') 
          
         ax3.plot(T, np.rad2deg(np.transpose(yout)[2])) 
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
@@ -116,6 +120,10 @@ def state_space_plot(motion, data):
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
         return plt.show()
+    
+    
+    
+    
     
     if motion == 'dutch':
         
@@ -172,7 +180,7 @@ def state_space_plot(motion, data):
     
     
     
-def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, time0, time1, data, motion):
+def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, time0, time1, data, motion):
     import numpy as np 
     import control.matlab as control 
     import matplotlib.pyplot as plt 
@@ -198,14 +206,15 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
     y2 = np.asarray(list(itertools.chain.from_iterable(variable3.get('data'))))[startind:endind]
     y3 = np.asarray(list(itertools.chain.from_iterable(variable4.get('data'))))[startind:endind]
     y4 = np.asarray(list(itertools.chain.from_iterable(variable5.get('data'))))[startind:endind]
+    y5 = np.asarray(list(itertools.chain.from_iterable(variable6.get('data'))))[startind:endind]
     
     X0 = np.transpose(np.matrix([data[5], 0, 0, 0]))
-    XX0 = np.transpose(np.matrix([0, 0, 0, data[-1]]))
+    XX0 = np.transpose(np.matrix([0, 0, 0, 0]))
 #    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
     states = state_space_conv(data)
     symsys = states[0]
     asymsys = states[2]
-     
+    
     if motion == 'phugoid': 
         timesim = 125 
         t = np.linspace(0, timesim, 1001) 
@@ -213,7 +222,7 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         U[0:80]= -0.7
         U[80:-1] = 0.19
         yout, T, xout = control.lsim(symsys, U, t, X0) 
-         
+        
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Symmetric Flight - Phugoid Motion') 
         T = np.ndarray.tolist(T)
@@ -272,31 +281,58 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         
         timesim = 15
         t = np.linspace(0, timesim, 1001)
-        U1, U2 = np.zeros(len(t)),np.zeros(len(t))
-        U1[0:120] = -9.7 + 0.86
-        U1[120:240] = 3.64 + 0.86
-        U1[240:-1] = -0.8
-        U = np.transpose(np.matrix([U1, U2]))
+        U = np.zeros((len(t),2))
+        U[0:120,1] = np.deg2rad(-9.7 + 0.86)
+        U[120:240,1] = np.deg2rad(3.64 + 0.86)
+        U[240:-1,1] = np.deg2rad(-0.8)
 
         yout, T, xout = control.lsim(asymsys, U, t, XX0)
         
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
-        f.suptitle('Asymmetric Flight - Dutch Roll Motion') 
+        f.suptitle('Asymmetric Flight - Dutch Roll Motion')  
         
-        ax1.plot(x, y1)
-        ax1.plot(T, U2+data[-4]) 
-        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Deflection Aileron [deg]') 
+        ax1.plot(x, y2)
+        ax1.plot(T, U[:,1])
+        ax1.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Rudder [deg]')
         
-        ax2.plot(x, y2)
-        ax2.plot(T, U1-0.86)
-        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Rudder [deg]') 
+        ax2.plot(x, y5)
+        ax2.plot(T, np.transpose((yout)[1])+data[8])
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]')
         
-        ax3.plot(x, y3+data[-2])
-        ax3.plot(T, np.transpose(yout)[2]) 
+        ax3.plot(x, y3)
+        ax3.plot(T, np.transpose(yout)[2]+data[6]) 
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
         
-        ax4.plot(x, y4+data[-1])
-        ax4.plot(T, np.transpose(yout)[3]) 
+        ax4.plot(x, y4)
+        ax4.plot(T, np.transpose(yout)[3]+data[7]) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
         return plt.show()
     
+    if motion == 'roll':
+        
+        timesim = 8
+        t = np.linspace(0, timesim, 1001)
+        U = np.zeros((len(t),2))
+        U[3:-1,:] = -1.2-0.83
+        
+        yout, T, xout = control.lsim(asymsys, U, t, XX0)
+        
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Asymmetric Flight - Aperiodic Roll Motion')
+        
+        ax1.plot(T, U[:,0]+0.83)
+        ax1.plot(x, y1)
+        ax1.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Aileron [deg]')
+        
+        ax2.plot(T, (np.transpose(yout)[1])+data[6])
+        ax2.plot(x, y5)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]')
+        
+        ax3.plot(T, -(np.transpose(yout)[2])+data[7])
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
+        
+        ax4.plot(T, (np.transpose(yout)[3])+data[8])
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        return plt.show()

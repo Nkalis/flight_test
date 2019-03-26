@@ -105,11 +105,11 @@ def eom(data):
     
     Pasym = np.matrix([[(C_Ydb-2*mu_b)*D_b, 0, 0, 0], 
                       [0, -0.5*D_b, 0, 0], 
-                      [0, 0, -4*mu_b*Ks_xx*D_b*D_b/2, -4*mu_b*Ks_xz*D_b*D_b/2], 
+                      [0, 0, -4*mu_b*Ks_xx*D_b*D_b/2, 4*mu_b*Ks_xz*D_b*D_b/2], 
                       [C_ndb*D_b, 0, 4*mu_b*Ks_xz*D_b*D_b/2, -4*mu_b*Ks_zz*D_b*D_b/2]]) 
      
-    Qasym = -1*np.matrix([[C_Yb, C_L, C_Yp*D_b/2, (C_Yr*D_b/2)-4*mu_b*D_b/2], 
-                      [0, 0, 1*D_b/2, 0], 
+    Qasym = -1*np.matrix([[C_Yb, C_L, C_Yp*D_b/2, (C_Yr-4*mu_b)*D_b/2], 
+                      [0, 0, -1*D_b/2, 0],
                       [C_lb, 0, C_lp*D_b/2, C_lr*D_b/2], 
                       [C_nb, 0, C_np*D_b/2, C_nr*D_b/2]]) 
      
