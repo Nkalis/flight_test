@@ -81,7 +81,7 @@ def eom(data):
     C_ndeltar = -0.0939 # (dC_n / delta_r) 
      
     """ Coefficient Calculations """
-    C_L = (w)/(0.5*rho*(V**2)*S)
+    C_L = -(w)/(0.5*rho*(V**2)*S)
     C_X0 = (w*np.sin(theta))/(0.5*rho*(V**2)*S) 
     C_Z0 = -(w*np.cos(theta))/(0.5*rho*(V**2)*S) 
     
