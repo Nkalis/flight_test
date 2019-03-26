@@ -40,5 +40,6 @@ def state_space_conv(data):
         print("System is stable") 
     else: 
         print("System is unstable") 
-     
+    
+    print(asymeig)
     return symsys, symeig, asymsys, asymeig
