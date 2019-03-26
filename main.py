@@ -87,7 +87,7 @@ variable5 = flightdata.get('Ahrs1_bPitchRate')
 ''' Comparing state space asymmetrical and actual '''
 variable1 = flightdata.get('time') 
 variable2 = flightdata.get('delta_a') 
-variable3 = flightdata.get('delta_r') 
+variable3 = flightdata.get('delta_r')
 variable4 = flightdata.get('Ahrs1_bRollRate')
 variable5 = flightdata.get('Ahrs1_bYawRate') 
 compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, 3098.5, 3098.5+15, flightparameters, 'dutch')

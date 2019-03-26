@@ -200,7 +200,7 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
     y4 = np.asarray(list(itertools.chain.from_iterable(variable5.get('data'))))[startind:endind]
     
     X0 = np.transpose(np.matrix([data[5], 0, 0, 0]))
-    XX0 = np.transpose(np.matrix([0, 0, data[-2], data[-1]]))
+    XX0 = np.transpose(np.matrix([0, 0, 0, data[-1]]))
 #    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
     states = state_space_conv(data)
     symsys = states[0]
@@ -275,7 +275,7 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         U1, U2 = np.zeros(len(t)),np.zeros(len(t))
         U1[0:120] = -9.7 + 0.86
         U1[120:240] = 3.64 + 0.86
-        U1[240:-1] = -0.86
+        U1[240:-1] = -0.8
         U = np.transpose(np.matrix([U1, U2]))
 
         yout, T, xout = control.lsim(asymsys, U, t, XX0)
