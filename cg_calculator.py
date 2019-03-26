@@ -2,7 +2,7 @@ def cg_calculator(x_nic,m_lt,m_rt):
     import numpy as np
     #mass import
     from postflightdata import post_flight_data
-    m_people = np.array(post_flight_data()[-1])
+    m_people = np.array(post_flight_data()[-7])
     #seat positions in meters from nose
     x1 = 131*0.0254
     x2 = 131*0.0254
@@ -15,7 +15,7 @@ def cg_calculator(x_nic,m_lt,m_rt):
     x_seats = np.array([x1,x2,x3,x4,x5,x6,x7,x_nic,x10])
     #moment arm empty aircraft
     x_ac = (261.56+80.98/4)*0.0254
-    m_ac = (post_flight_data()[-5])*0.45359237
+    m_ac = (post_flight_data()[9])
     #moment arm fuel
     mass = [None]*50
     mass[0] = 0
