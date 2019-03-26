@@ -85,7 +85,7 @@ def eom(data):
     C_X0 = (w*np.sin(theta))/(0.5*rho*(V**2)*S) 
     C_Z0 = -(w*np.cos(theta))/(0.5*rho*(V**2)*S) 
     
-    print(C_L, C_X0, C_Z0)
+    print('CL = ' + str(C_L))
     """ Equations of symmetric motion """ 
     Psym = np.matrix([[-2*mu_c*D_c/V, 0, 0, 0], 
                      [0, (C_Zda-2*mu_c)*D_c, 0, 0], 

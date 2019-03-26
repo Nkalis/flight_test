@@ -22,7 +22,6 @@ def state_space_conv(data):
         print("System is stable") 
     else: 
         print("System is unstable") 
-         
     #Asymmetrical Case 
     A = np.linalg.inv(Pasym)*Qasym 
     B = np.linalg.inv(Pasym)*Rasym 
@@ -39,7 +38,6 @@ def state_space_conv(data):
     if count == len(asymeig): 
         print("System is stable") 
     else: 
-        print("System is unstable") 
-    
-    print(asymeig)
+        print("System is unstable")
+
     return symsys, symeig, asymsys, asymeig

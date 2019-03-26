@@ -26,32 +26,30 @@ def response_plot_data(timedata, variable1, variable2, time0, time1):
     return plt.show() 
  
 def state_space_plot(motion, data):
-
+    
     import numpy as np 
     import control.matlab as control 
     import matplotlib.pyplot as plt 
     from state_space_con import state_space_conv 
-    
-    X0 = np.transpose(np.matrix([0,0,0,0]))
-#    X0 = np.transpose(np.matrix([0, 0, 0, 0]))
+
     states = state_space_conv(data)
     symsys = states[0]
     asymsys = states[2]
-     
-    if motion == 'phugoid': 
-         
+    if motion == 'phugoid':
+        
         timesim = 125 
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:75]= -0.75
-        U[75:-1] = 0
-        yout, T, xout = control.lsim(symsys, U, t, X0) 
-         
+        U[0:80]= -0.09
+        U[80:-1] = 0
+        yout, T, xout = control.lsim(symsys, U, t)
+        
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Symmetric Flight - Phugoid Motion') 
         T = np.ndarray.tolist(T)
         yout = np.ndarray.tolist(yout)
         
+        plt.tight_layout()
         ax1.plot(T, np.transpose(yout)[0]) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Velocity [m/s]') 
          
@@ -62,19 +60,31 @@ def state_space_plot(motion, data):
         ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
          
         ax4.plot(T, np.transpose(yout)[3]) 
-        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
-        return plt.show() 
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
+        
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.92)
+        
+        f.set_figheight(6)
+        f.set_figwidth(9)
+        plt.savefig("sym-numerical-phugoid", dpi=300)
+        period = ((np.pi*2)/np.imag(states[1][2]))
+        c = control.damp(symsys, doprint=True)
+        print('period = ' + str(period))
+        return plt.show()
      
     if motion == 'short': 
          
-        timesim = 8 
+        timesim = 8
         t = np.linspace(0, timesim, 1001) 
         U = np.zeros(len(t)) 
-        U[0:-1]= -0.7 
-        yout, T, xout = control.lsim(symsys, U, t, X0) 
+        U[0:-1]= -0.024
+        yout, T, xout = control.lsim(symsys, U, t)
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Symmetric Flight - Short Period Motion') 
+        T = np.ndarray.tolist(T)
+        yout = np.ndarray.tolist(yout) 
          
         ax1.plot(T, np.transpose(yout)[0]) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Velocity [m/s]') 
@@ -87,21 +97,33 @@ def state_space_plot(motion, data):
          
         ax4.plot(T, np.transpose(yout)[3]) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]') 
-        return plt.show() 
+                
+        plt.tight_layout()
+        f.set_figheight(7)
+        f.set_figwidth(8)
+        
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.92)
+        
+        f.set_figheight(6)
+        f.set_figwidth(9)
+        plt.savefig("sym-numerical-short", dpi=300)
+        period = ((np.pi*2)/np.imag(states[1][1]))
+        c = control.damp(symsys, doprint=True)
+        print('period = ' + str(period))
+        return plt.show()
     
     if motion == 'aperiodic':
         
         timesim = 8
         t = np.linspace(0, timesim, 1001)
         U = np.zeros((len(t),2))
-        U[3:-1,:] = -0.0253
-#        U2[0:1] = 1.23
-#        U = np.transpose(np.matrix(U))
-
-        yout, T, xout = control.lsim(asymsys, U, t, X0)
+        U[3:-1,:] = -0.0256
+        
+        yout, T, xout = control.lsim(asymsys, U, t)
         
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
-        f.suptitle('Asymmetric Flight - Aperiodic Roll Motion') 
+        f.suptitle('Asymmetric Flight - Aperiodic Roll Motion')
          
         ax1.plot(T, np.rad2deg(np.transpose(yout)[0])) 
         ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Andle of Side Slip [deg]') 
@@ -114,6 +136,15 @@ def state_space_plot(motion, data):
          
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+                
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.92)
+        
+        f.set_figheight(6)
+        f.set_figwidth(9)
+        plt.savefig("asym-numerical-aperiodic", dpi=300)
+        c = control.damp(asymsys, doprint=True)
+        print('period = ' + str(0))
         return plt.show()
     
     if motion == 'dutch':
@@ -121,12 +152,12 @@ def state_space_plot(motion, data):
         timesim = 20
         t = np.linspace(0, timesim, 1001)
         U = np.zeros((len(t),2))
-        U[0+25:95+25,1] = (-9.7+0.6)/0.4
-        U[0+25:95+25,1] = (-9.7+0.6)/0.4
-        U[95+25:180+25,1] = (3.64+0.6)/0.4
+        U[0+25:95+25,1] = -0.14
+        U[0+25:95+25,1] = 0.14
+        U[95+25:180+25,1] = 0
         U[250+25:-1,1] = 0
 
-        yout, T, xout = control.lsim(asymsys, U, t, X0)
+        yout, T, xout = control.lsim(asymsys, U, t)
         
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Asymmetric Flight - Dutch Roll Motion') 
@@ -142,16 +173,27 @@ def state_space_plot(motion, data):
          
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+                
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.92)
+        
+        f.set_figheight(6)
+        f.set_figwidth(9)
+        plt.savefig("asym-numerical-dutch", dpi=300)
+        period = ((np.pi*2)/np.imag(states[3][1]))
+        c = control.damp(asymsys, doprint=True)
+        print('period = ' + str(period))
         return plt.show()
     
     if motion == 'spiral':
         
-        timesim = 200
+        timesim = 120
         t = np.linspace(0, timesim, 1001)
         U = np.zeros((len(t),2))
-        U[0:5,0]= -0.01
-
-        yout, T, xout = control.lsim(asymsys, U, t, X0)
+        U[0:30,:] = -0.01
+        U[30:-1,:] = 0
+        
+        yout, T, xout = control.lsim(asymsys, U, t)
         
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
         f.suptitle('Asymmetric Flight - Spiral Motion') 
@@ -167,6 +209,15 @@ def state_space_plot(motion, data):
          
         ax4.plot(T, np.rad2deg(np.transpose(yout)[3])) 
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+                
+        plt.tight_layout()
+        plt.subplots_adjust(top=0.92)
+        
+        f.set_figheight(6)
+        f.set_figwidth(9)
+        plt.savefig("asym-numerical-spiral", dpi=300)
+        c = control.damp(asymsys, doprint=True)
+        print('period = ' + str(0))
         return plt.show()
     
 def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, time0, time1, data, motion):
@@ -233,6 +284,11 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         ax4.plot(x, y4)
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
         
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("sym-compare-phugoid", dpi=300)
         return plt.show()
     
     if motion == 'short': 
@@ -264,6 +320,11 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         ax4.plot(x, y4)
         ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
         
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("sym-compare-short", dpi=300)
         return plt.show()
     
     if motion == 'dutch':
@@ -295,7 +356,13 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         
         ax4.plot(T, -(np.transpose(yout)[3]+data[7])*0.4)
         ax4.plot(x, y4)
-        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-compare-dutch", dpi=300)
         return plt.show()
     
     if motion == 'aperiodic':
@@ -324,7 +391,12 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         
         ax4.plot(T, -(np.transpose(yout)[3])+data[8])
         ax4.plot(x, y4)
-        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-compare-aperiodic", dpi=300)
         return plt.show()
 
     if motion == 'spiral':
@@ -354,5 +426,10 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         
         ax4.plot(T, -((np.transpose(yout)[3])+data[8])+1.2)
         ax4.plot(x, y4)
-        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]') 
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-compare-spiral", dpi=300)
         return plt.show()
