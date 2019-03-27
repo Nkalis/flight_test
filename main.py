@@ -36,7 +36,7 @@ vane_AOA                = Angle of Attack
 from data_extractor import data_extractor #data_extractor() 
 from fuel_calc import fuel_calc #fuel_calc(initial_l, initial_r, fuel_lef, fuel_rig, timedata, time) 
 from map_plot import map_plot #map_plot(timedata, t0, t1, gps_lon, gps_lat, alt) 
-from response_plots import response_plot_data, state_space_plot, compare_plot #response_plot(variable1, variable2, time0, time1) 
+from response_plots import response_plot_data, state_space_plot, compare_plot, actual_plot #response_plot(variable1, variable2, time0, time1) 
 from cg_calculator import cg_calculator #(x_coord,m_lt,m_rt) 
 from postflightdata import post_flight_data 
 from flight_parameters import flight_parameters
@@ -48,6 +48,8 @@ testdata = post_flight_data()
 # (h,m,theta,alpha,tdata,t)
 ''' Getting the time data from the flight data ''' 
 timedata = flightdata.get('time') 
+t0 = (48*60)+3
+t1 = 'end'
 
 ''' Example of plotting two variables against eachother ''' 
 variable1 = flightdata.get('time') 
@@ -57,9 +59,9 @@ alt = flightdata.get('Dadc1_bcAlt')
 #response_plot_data(timedata, variable1, variable2, t0, t1) 
 
 #''' Example of a map plot ''' 
-#gps_lon = flightdata.get('Gps_long') 
-#gps_lat = flightdata.get('Gps_lat') 
-#alt = flightdata.get('Dadc1_bcAlt') 
+gps_lon = flightdata.get('Gps_long') 
+gps_lat = flightdata.get('Gps_lat') 
+alt = flightdata.get('Dadc1_bcAlt') 
 #map_plot(timedata, t0, t1, gps_lon, gps_lat, alt) 
 #
 ''' Calculating the fuel left in the tanks ''' 
@@ -70,34 +72,63 @@ initial_fuel_r = 4050/2
 fuel_mass = fuel_calc(initial_fuel_l, initial_fuel_r, fuel_used_l, fuel_used_r, testdata[-3])
 
 ''' Getting flight parameters AND SETTING TIMES FOR THE INITIAL INPUTS'''
-t0 = 3098.6
-t1 = 3220.7+120
 flightparameters = flight_parameters(flightdata.get('Dadc1_bcAlt'), fuel_mass[2], flightdata.get('Ahrs1_Pitch'), flightdata.get('vane_AOA'), timedata, t0, flightdata.get('Dadc1_tas'), flightdata.get('Ahrs1_Roll'), flightdata.get('Ahrs1_bRollRate'), flightdata.get('Ahrs1_bYawRate'))
 print('m = ' + str(flightparameters[1]))
 print('rho = ' + str(flightparameters[4]))
-#state_space_plot('phugoid', flightparameters)
+print('v = ' + str(flightparameters[5]))
+
+
+
+''' Plotting Numerical Model Simulations '''
+state_space_plot('phugoid', flightparameters)
 #state_space_plot('short', flightparameters)
-state_space_plot('dutch', flightparameters)
+#state_space_plot('dutch', flightparameters)
 #state_space_plot('spiral', flightparameters)
 #state_space_plot('aperiodic', flightparameters)
 
+
+
+''' Plotting Actual Flight Data '''
 ''' Comparing state space symmetrical and actual '''
-#variable1 = flightdata.get('time') 
-#variable2 = flightdata.get('delta_e')
-#variable3 = flightdata.get('vane_AOA') 
-#variable4 = flightdata.get('Ahrs1_Pitch')
-#variable5 = flightdata.get('Ahrs1_bPitchRate')
-#variable6 = flightdata.get('Ahrs1_Roll')
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('delta_e')
+variable3 = flightdata.get('vane_AOA') 
+variable4 = flightdata.get('Ahrs1_Pitch')
+variable5 = flightdata.get('Ahrs1_bPitchRate')
+variable6 = flightdata.get('Ahrs1_Roll')
+#actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 2891-1.4,  2891+125-1.4, flightparameters, 'phugoid')
+#actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3041.5, 3049.5, flightparameters, 'short')
+
+''' Comparing state space asymmetrical and actual '''
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('Ahrs1_bYawRate') 
+variable3 = flightdata.get('delta_r')
+variable4 = flightdata.get('Ahrs1_bRollRate')
+variable5 = flightdata.get('Ahrs1_bYawRate')
+variable6 = flightdata.get('Ahrs1_Roll')
+#actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3098.6, 3118.6, flightparameters, 'dutch')
+#actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 2833.7, 2833.7+8, flightparameters, 'aperiodic')
+#actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3220.7, 3220.7+120, flightparameters, 'spiral')
+
+
+
+''' Comparing state space symmetrical and actual '''
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('delta_e')
+variable3 = flightdata.get('vane_AOA') 
+variable4 = flightdata.get('Ahrs1_Pitch')
+variable5 = flightdata.get('Ahrs1_bPitchRate')
+variable6 = flightdata.get('Ahrs1_Roll')
 #compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 2891-1.4,  2891+125-1.4, flightparameters, 'phugoid')
 #compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3041.5, 3049.5, flightparameters, 'short')
 
 ''' Comparing state space asymmetrical and actual '''
-#variable1 = flightdata.get('time') 
-#variable2 = flightdata.get('delta_a') 
-#variable3 = flightdata.get('delta_r')
-#variable4 = flightdata.get('Ahrs1_bRollRate')
-#variable5 = flightdata.get('Ahrs1_bYawRate')
-#variable6 = flightdata.get('Ahrs1_Roll')
+variable1 = flightdata.get('time') 
+variable2 = flightdata.get('Ahrs1_bYawRate') 
+variable3 = flightdata.get('delta_r')
+variable4 = flightdata.get('Ahrs1_bRollRate')
+variable5 = flightdata.get('Ahrs1_bYawRate')
+variable6 = flightdata.get('Ahrs1_Roll')
 #compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3098.6, 3118.6, flightparameters, 'dutch')
 #compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 2833.7, 2833.7+8, flightparameters, 'aperiodic')
 #compare_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, 3220.7, 3220.7+120, flightparameters, 'spiral')
