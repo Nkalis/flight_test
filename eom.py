@@ -52,7 +52,8 @@ def eom(data):
     C_ma = -0.5626 # (dC_m / dalpha) 
     C_mda = 0.1780 # (dC_m / dalpha_dot) 
     C_mq = -8.7941 # (dC_m / dq) 
-    C_mdelta = -1.1642 # (dC_m / ddelta) 
+#    C_mdelta = -1.1642 # (dC_m / ddelta)
+    C_mdelta = -0.987672
     C_mTc = -0.0064 # (dC_m / dTc)
      
     """ Linear model stability derivatives - asymmetric flight """ 
@@ -85,7 +86,7 @@ def eom(data):
     C_X0 = (w*np.sin(theta))/(0.5*rho*(V**2)*S) 
     C_Z0 = -(w*np.cos(theta))/(0.5*rho*(V**2)*S) 
     
-    print('CL = ' + str(C_L))
+    print('C_Z0 = ' + str(C_Z0))
     """ Equations of symmetric motion """ 
     Psym = np.matrix([[-2*mu_c*D_c/V, 0, 0, 0], 
                      [0, (C_Zda-2*mu_c)*D_c, 0, 0], 

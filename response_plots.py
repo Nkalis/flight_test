@@ -300,7 +300,7 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         yout, T, xout = control.lsim(symsys, U, t, X0) 
          
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
-        f.suptitle('Symmetric Flight - Phugoid Motion') 
+        f.suptitle('Symmetric Flight - Short Period Motion') 
         T = np.ndarray.tolist(T)
         yout = np.ndarray.tolist(yout)
         
@@ -410,7 +410,7 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         yout, T, xout = control.lsim(asymsys, U, t, XX0)
         
         f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
-        f.suptitle('Asymmetric Flight - Aperiodic Roll Motion')
+        f.suptitle('Asymmetric Flight - Spiral Motion')
         
         ax1.plot(T, ((U[:,0])+(0.65)))
         ax1.plot(x, y1)
@@ -432,4 +432,152 @@ def compare_plot(timedata, variable1, variable2, variable3, variable4, variable5
         f.set_figwidth(8)
         
         plt.savefig("asym-compare-spiral", dpi=300)
+        return plt.show()
+
+def actual_plot(timedata, variable1, variable2, variable3, variable4, variable5, variable6, time0, time1, data, motion):
+    import numpy as np 
+    import control.matlab as control 
+    import matplotlib.pyplot as plt 
+    from state_space_con import state_space_conv  
+    import itertools 
+     
+    time = np.round(np.asarray(timedata.get('data')),3) 
+    
+    if time0 == 'start': 
+        startind = 0 
+    else: 
+        startind = list(time).index(time0) 
+    if time1 == 'end': 
+        endind = -1 
+    else: 
+        endind = list(time).index(time1) 
+    if variable1.get('description') == 'Time': 
+        x = time[startind:endind] - time0
+    else: 
+        x = np.asarray(list(itertools.chain.from_iterable(variable1.get('data'))))[startind:endind] - time0
+        
+    y1 = np.asarray(list(itertools.chain.from_iterable(variable2.get('data'))))[startind:endind]
+    y2 = np.asarray(list(itertools.chain.from_iterable(variable3.get('data'))))[startind:endind]
+    y3 = np.asarray(list(itertools.chain.from_iterable(variable4.get('data'))))[startind:endind]
+    y4 = np.asarray(list(itertools.chain.from_iterable(variable5.get('data'))))[startind:endind]
+    y5 = np.asarray(list(itertools.chain.from_iterable(variable6.get('data'))))[startind:endind]
+    
+    if motion == 'phugoid': 
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Symmetric Flight - Phugoid Motion') 
+        
+        ax1.plot(x, y1)
+        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Elevator Deflection Angle [deg]') 
+         
+        ax2.plot(x, y2)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
+         
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
+         
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
+        
+        plt.subplots_adjust(top=0.92)
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("sym-actual-phugoid", dpi=300)
+        return plt.show()
+    
+    if motion == 'short': 
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Symmetric Flight - Short Period Motion') 
+        
+        ax1.plot(x, y1)
+        ax1.set(xlabel = 'Simulation time T [s]', ylabel = 'Elevator Deflection Angle [deg]') 
+
+        ax2.plot(x, y2)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Angle of Attack [deg]') 
+        
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Angle [deg]')# 
+        
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Pitch Rate [deg/s]')
+        
+        plt.subplots_adjust(top=0.92)
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("sym-actual-short", dpi=300)
+        return plt.show()
+    
+    if motion == 'dutch':
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Asymmetric Flight - Dutch Roll Motion')  
+        
+        ax1.plot(x, y2)
+        ax1.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Rudder [deg]')
+        
+        ax2.plot(x, y5)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]')
+
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
+        
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        
+        plt.subplots_adjust(top=0.85)
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-actual-dutch", dpi=300)
+        return plt.show()
+    
+    if motion == 'aperiodic':
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Asymmetric Flight - Aperiodic Roll Motion')
+        
+        ax1.plot(x, y1)
+        ax1.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Aileron [deg]')
+        
+        ax2.plot(x, y5)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]')
+        
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
+        
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        
+        plt.subplots_adjust(top=0.85)
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-actual-aperiodic", dpi=300)
+        return plt.show()
+
+    if motion == 'spiral':
+        f, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2) 
+        f.suptitle('Asymmetric Flight - Spiral Motion')
+        
+        ax1.plot(x, y1)
+        ax1.set(Xlabel = 'Simulation time T [s]', ylabel = 'Deflection Aileron [deg]')
+        
+        ax2.plot(x, y5)
+        ax2.set(Xlabel = 'Simulation time T [s]', ylabel = 'Roll Angle [deg]')
+        
+        ax3.plot(x, y3)
+        ax3.set(xlabel = 'Simulation time T [s]', ylabel = 'Roll Rate [deg/s]')# 
+        
+        ax4.plot(x, y4)
+        ax4.set(xlabel = 'Simulation time T [s]', ylabel = 'Yaw Rate [deg/s]')
+        
+        plt.subplots_adjust(top=0.85)
+        plt.tight_layout()
+        f.set_figheight(6)
+        f.set_figwidth(8)
+        
+        plt.savefig("asym-actual-spiral", dpi=300)
         return plt.show()

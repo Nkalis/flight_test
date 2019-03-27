@@ -30,7 +30,7 @@ def map_plot(timedata, t0, t1, gps_lon, gps_lat, alt):
         startind = list(time).index(t0) 
  
     ''' Setting up the basemap plot ''' 
-    m = Basemap(resolution='h', # c, l, i, h, f or None 
+    m = Basemap(resolution='f', # c, l, i, h, f or None 
                 projection='cyl', 
                 lat_0=(westlimit+eastlimit)/2, lon_0=(southlimit+northlimit)/2, 
                 llcrnrlon=westlimit, llcrnrlat= southlimit, urcrnrlon=eastlimit, urcrnrlat=northlimit, epsg=3035) 
@@ -43,7 +43,7 @@ def map_plot(timedata, t0, t1, gps_lon, gps_lat, alt):
 #    m.drawcountries(color = "black") 
 #    m.drawcoastlines() 
     '''         Uncomment below for detailed plot           ''' 
-    m.arcgisimage(service = "World_Shaded_Relief", xpixels=8000) #uncomment this for super high res image 
+    m.arcgisimage(service = "World_Topo_Map", xpixels=12000) #uncomment this for super high res image 
      
     '''drawing the meridian and parralel lines, labels = [left,right,top,bottom] ''' 
     m.drawmeridians(np.arange(0, 360, 0.5), labels=[False,True,True,False]) 
@@ -67,5 +67,6 @@ def map_plot(timedata, t0, t1, gps_lon, gps_lat, alt):
     norm = 1-(((alt-np.min(alt))/(np.max(alt)-np.min(alt)))) 
     m.scatter(xpts, ypts, marker='o', c=cm.viridis(norm),  edgecolor='none', s=15, zorder=10) 
      
-    ''' Returning the map plot ''' 
+    ''' Returning the map plot '''
+    plt.savefig("sexi-map-boi", dpi=1000)
     return plt.show()
